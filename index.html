@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Happy Birthday Sayanggg💗</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        min-height: 100vh;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        background: radial-gradient(
+          circle at top,
+          #ffd9e9,
+          #e86b9e 45%,
+          #5d173f
+        );
+      }
+      .screen {
+        position: absolute;
+        inset: 0;
+        display: none;
+        place-items: center;
+        padding: 20px;
+        overflow: auto;
+      }
+      .screen.active {
+        display: grid;
+        animation: fade 0.6s;
+      }
+      .card {
+        width: min(440px, 94vw);
+        padding: 30px 24px;
+        text-align: center;
+        border: 1px solid #ffffff55;
+        border-radius: 30px;
+        background: #ffffff20;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 25px 70px #4d003855;
+      }
+      h1 {
+        font-size: clamp(32px, 9vw, 52px);
+        margin-bottom: 12px;
+      }
+      h2 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      p {
+        line-height: 1.6;
+        opacity: 0.9;
+        margin-bottom: 20px;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 15px;
+        border: 0;
+        border-radius: 15px;
+        margin: 8px 0 15px;
+        font-size: 16px;
+      }
+      button {
+        border: 0;
+        border-radius: 99px;
+        padding: 14px 24px;
+        background: #fff;
+        color: #9b245b;
+        font-weight: bold;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 10px 25px #50002d55;
+        transition: 0.25s;
+      }
+      button:hover {
+        transform: translateY(-3px);
+      }
+      .progress {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        background: #ffffff55;
+        border-radius: 50%;
+      }
+      .dot.on {
+        background: #fff;
+      }
+      #puzzle {
+        width: min(310px, 80vw);
+        height: min(310px, 80vw);
+        margin: 20px auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 4px;
+        background: #ffffff55;
+        border-radius: 18px;
+      }
+      .tile {
+        border-radius: 7px;
+        background-image: url("Shintya.png");
+        background-size: 300% 300%;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .tile.selected {
+        outline: 4px solid #fff;
+        transform: scale(0.95);
+      }
+
+      .envelope-stage{
+        position:relative;
+        width:min(390px,86vw);
+        height:310px;
+        margin:12px auto 20px;
+        display:grid;
+        place-items:center;
+        perspective:1200px;
+      }
+
+      .envelope{
+        position:relative;
+        width:min(330px,82vw);
+        height:215px;
+        cursor:pointer;
+        transform-style:preserve-3d;
+        transform:rotateX(8deg) rotateY(0deg);
+        transition:transform .7s cubic-bezier(.2,.8,.2,1);
+        filter:drop-shadow(0 30px 25px #43002580);
+      }
+      .envelope:hover{
+        transform:translateY(-8px) rotateX(10deg) rotateY(-4deg) scale(1.02);
+      }
+      .envelope::after{
+        content:"";
+        position:absolute;
+        left:8%;
+        right:8%;
+        bottom:-28px;
+        height:32px;
+        border-radius:50%;
+        background:#ff5fa8aa;
+        filter:blur(14px);
+        transform:rotateX(70deg);
+      }
+
+      .env-back,.env-front,.flap,.letter,.seal{
+        position:absolute;
+        transform-style:preserve-3d;
+      }
+
+      .env-back{
+        inset:0;
+        overflow:hidden;
+        border-radius:16px;
+        background:linear-gradient(145deg,#ffbad9 0%,#f75d9e 48%,#c92f72 100%);
+        box-shadow:
+          inset 0 2px 2px #ffffffaa,
+          inset 0 -10px 20px #8e124b55,
+          0 8px 0 #9d245b;
+      }
+      .env-back::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:
+          linear-gradient(145deg,transparent 48%,#ffffff20 49%,transparent 51%),
+          linear-gradient(35deg,transparent 48%,#ffffff18 49%,transparent 51%);
+        opacity:.8;
+      }
+
+      .env-front{
+        inset:0;
+        z-index:3;
+        overflow:hidden;
+        border-radius:16px;
+        background:linear-gradient(145deg,#ff91c1,#ed4f93 55%,#b91f63);
+        clip-path:polygon(0 0,50% 54%,100% 0,100% 100%,0 100%);
+        box-shadow:inset 0 -12px 18px #8c0d4555;
+      }
+      .env-front::after{
+        content:"";
+        position:absolute;
+        inset:0;
+        background:linear-gradient(135deg,#ffffff28,transparent 35%,#7a003c18);
+      }
+
+      .flap{
+        top:0;
+        left:0;
+        width:100%;
+        height:125px;
+        z-index:5;
+        border-radius:16px 16px 8px 8px;
+        background:linear-gradient(145deg,#ffd0e3 0%,#ff9fc6 48%,#e85a99 100%);
+        clip-path:polygon(0 0,100% 0,50% 100%);
+        transform-origin:50% 0%;
+        transition:transform 1.05s cubic-bezier(.2,.8,.2,1);
+        box-shadow:0 7px 10px #890d4655;
+        backface-visibility:hidden;
+      }
+      .flap::after{
+        content:"";
+        position:absolute;
+        left:50%;
+        top:13px;
+        width:85%;
+        height:70%;
+        transform:translateX(-50%);
+        background:linear-gradient(145deg,#ffffff35,transparent);
+        clip-path:polygon(0 0,100% 0,50% 100%);
+      }
+
+      .letter{
+        top:22px;
+        left:9%;
+        width:82%;
+        min-height:160px;
+        padding:28px 20px 20px;
+        z-index:2;
+        border-radius:14px;
+        color:#762044;
+        background:linear-gradient(160deg,#fff,#fff0f7);
+        box-shadow:0 12px 25px #5e073855;
+        transform:translateZ(2px);
+        transition:transform 1s cubic-bezier(.2,.8,.2,1),box-shadow 1s;
+      }
+      .letter::before{
+        content:"";
+        position:absolute;
+        inset:7px;
+        border:1px solid #ef7daf55;
+        border-radius:10px;
+        pointer-events:none;
+      }
+      .letter b{
+        font-size:21px;
+        color:#d52e79;
+      }
+
+      .seal{
+        left:50%;
+        top:52%;
+        width:62px;
+        height:62px;
+        z-index:7;
+        transform:translate(-50%,-50%) translateZ(35px);
+        display:grid;
+        place-items:center;
+        border-radius:50%;
+        color:white;
+        font-size:28px;
+        background:radial-gradient(circle at 30% 25%,#ffd7e9,#ff5ca5 45%,#bd175f 100%);
+        border:3px solid #ffd7e9;
+        box-shadow:
+          0 0 0 4px #ef4f9633,
+          0 10px 20px #73053d88,
+          inset 0 3px 5px #ffffff88;
+        transition:transform .7s,opacity .4s;
+      }
+      .seal::before{
+        content:"♥";
+        filter:drop-shadow(0 2px 2px #8d174c);
+      }
+
+      .envelope.open{
+        transform:translateY(12px) rotateX(8deg);
+      }
+      .envelope.open .flap{
+        transform:rotateX(-178deg);
+      }
+      .envelope.open .letter{
+        transform:translateY(-125px) translateZ(28px) rotateX(-2deg);
+        box-shadow:0 25px 35px #5e073866;
+      }
+      .envelope.open .seal{
+        transform:translate(-50%,-50%) translateZ(35px) scale(.35) rotate(20deg);
+        opacity:0;
+      }
+
+      .open-hint{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        margin-top:2px;
+        padding:10px 16px;
+        border:1px solid #ffffff44;
+        border-radius:999px;
+        background:#ffffff16;
+        backdrop-filter:blur(10px);
+        font-size:13px;
+        animation:pulseHint 1.8s ease-in-out infinite;
+      }
+
+      .spark{
+        position:fixed;
+        left:50%;
+        top:48%;
+        z-index:100;
+        pointer-events:none;
+        animation:sparkBurst 1.5s cubic-bezier(.15,.7,.25,1) forwards;
+        filter:drop-shadow(0 0 8px #ff7eb8);
+      }
+
+      @keyframes pulseHint{
+        0%,100%{transform:scale(1);box-shadow:0 0 0 #ff75b000}
+        50%{transform:scale(1.04);box-shadow:0 0 24px #ff75b855}
+      }
+      @keyframes sparkBurst{
+        0%{transform:translate(-50%,-50%) scale(.1) rotate(0deg);opacity:1}
+        70%{opacity:1}
+        100%{
+          transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(var(--s)) rotate(var(--r));
+          opacity:0
+        }
+      }
+
+      @keyframes fade {
+
+        from {
+          opacity: 0;
+          transform: scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes burst {
+        0% {
+          transform: translate(-50%, -50%) scale(0.2);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y)))
+            rotate(var(--r)) scale(1.8);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section id="s1" class="screen active">
+      <div class="card">
+        <div style="font-size: 60px">🎂💗</div>
+        <h1>"Happy Birthday  Yang Ke 16 Sayanggg💗"</h1>
+        <p>Masukkan tanggal lahir kamu untuk membuka kejutan hadiah spesial ini dari aku.</p>
+        <input id="birth" type="text" placeholder="Contoh: 17 Agustus 2010" autocomplete="off" />
+        <button onclick="nextDate()">Buka Kejutan ✨</button>
+      </div>
+    </section>
+
+    <section id="s2" class="screen">
+      <div class="card">
+        <div class="progress">
+          <i class="dot on"></i><i class="dot on"></i><i class="dot"></i>
+        </div>
+        <h2>Susun Foto Kamuu 🧩</h2>
+        <p>Susun Foto Imut Kamu Sayangg💕</p>
+        <div id="puzzle"></div>
+        <button onclick="checkPuzzle()">Lanjut 💕</button>
+        <div class="small">
+        
+        </div>
+      </div>
+    </section>
+
+    <section id="s3" class="screen">
+      <div class="card">
+        <div class="progress">
+          <i class="dot on"></i><i class="dot on"></i><i class="dot on"></i>
+        </div>
+        <h2>Surat Buat Kamu 💌</h2>
+      
+        <div class="envelope-stage">
+          <div id="env" class="envelope" onclick="openEnvelope()" aria-label="Buka amplop">
+            <div class="env-back"></div>
+            <div class="letter">
+              <b>Happy Birthday yang ke 16 Cimupp! 💗</b><br /><br />
+              Semoga hari ini dipenuhi senyum, kebahagiaan, dan semua hal indah yang kamu inginkan. ❤️
+            </div>
+            <div class="flap"></div>
+            <div class="env-front"></div>
+            <div class="seal" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="open-hint">👆 Klik amplop untuk membuka kejutan 💌</div>
+      </div>
+    </section>
+
+    <audio id="audio" src="somh.mp3" loop preload="auto"></audio>
+
+    <script>
+      let selected = null;
+      let solved = false;
+      let opened = false;
+
+      function show(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+      function nextDate() {
+        if (!document.getElementById("birth").value) {
+          alert("Masukkan tanggal lahirnya Dulu Sayangg💗");
+          return;
+        }
+        show("s2");
+        buildPuzzle();
+      }
+      function buildPuzzle() {
+        const p = document.getElementById("puzzle");
+        p.innerHTML = "";
+        for (let i = 0; i < 9; i++) {
+          const t = document.createElement("div");
+          t.className = "tile";
+          t.dataset.pos = i;
+          t.dataset.correct = i;
+          t.style.backgroundPosition = `${(i % 3) * 50}% ${Math.floor(i / 3) * 50}%`;
+          t.onclick = () => selectTile(t);
+          p.appendChild(t);
+        }
+        // Acak puzzle secara otomatis, tetapi jangan sampai sudah tersusun
+        const tiles = [...p.children];
+        for (let i = tiles.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [tiles[i].dataset.correct, tiles[j].dataset.correct] = [
+            tiles[j].dataset.correct,
+            tiles[i].dataset.correct,
+          ];
+        }
+        tiles.forEach((t) => {
+          const n = Number(t.dataset.correct);
+          t.style.backgroundPosition = `${(n % 3) * 50}% ${Math.floor(n / 3) * 50}%`;
+        });
+      }
+      function selectTile(t) {
+        if (!selected) {
+          selected = t;
+          t.classList.add("selected");
+          return;
+        }
+        if (selected === t) {
+          selected.classList.remove("selected");
+          selected = null;
+          return;
+        }
+        const a = selected.dataset.correct,
+          b = t.dataset.correct;
+        selected.dataset.correct = b;
+        t.dataset.correct = a;
+        selected.style.backgroundPosition = `${(b % 3) * 50}% ${Math.floor(b / 3) * 50}%`;
+        t.style.backgroundPosition = `${(a % 3) * 50}% ${Math.floor(a / 3) * 50}%`;
+        selected.classList.remove("selected");
+        selected = null;
+      }
+      function checkPuzzle() {
+        const tiles = [...document.querySelectorAll(".tile")];
+        const ok = tiles.every(
+          (t) => Number(t.dataset.correct) === Number(t.dataset.pos),
+        );
+        if (!ok) {
+          alert("Puzzle belum benar, coba susun lagi Cantikk🧩");
+          return;
+        }
+        solved = true;
+        show("s3");
+      }
+      function openEnvelope() {
+        if (opened) return;
+        opened = true;
+        document.getElementById("env").classList.add("open");
+        burstHearts();
+        const audio = document.getElementById("audio");
+        audio.currentTime = 0;
+        audio.play().catch(() => {
+          document.getElementById("musicStatus").innerHTML =
+            "🎵 Klik amplop sekali lagi jika musik belum berbunyi";
+        });
+      }
+      function burstHearts() {
+        const icons = ["💗", "💕", "💖", "💘", "💝", "❤️", "✨", "♡"];
+        for (let i = 0; i < 85; i++) {
+          const h = document.createElement("span");
+          h.className = "spark";
+          h.textContent = icons[Math.floor(Math.random() * icons.length)];
+
+          const angle = Math.random() * Math.PI * 2;
+          const distance = 90 + Math.random() * 520;
+
+          h.style.setProperty("--x", Math.cos(angle) * distance + "px");
+          h.style.setProperty("--y", Math.sin(angle) * distance + "px");
+          h.style.setProperty("--r", Math.random() * 900 - 450 + "deg");
+          h.style.setProperty("--s", (0.7 + Math.random() * 1.5).toFixed(2));
+          h.style.fontSize = 15 + Math.random() * 28 + "px";
+          h.style.animationDelay = Math.random() * 180 + "ms";
+
+          document.body.appendChild(h);
+          setTimeout(() => h.remove(), 1800);
+        }
+      }
+    </script>
+  </body>
+</html>
